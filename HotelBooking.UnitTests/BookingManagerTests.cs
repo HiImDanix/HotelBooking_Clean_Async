@@ -12,11 +12,16 @@ namespace HotelBooking.UnitTests
     {
         private IBookingManager bookingManager;
         IRepository<Booking> bookingRepository;
+        
 
         public BookingManagerTests(){
             DateTime start = DateTime.Today.AddDays(10);
             DateTime end = DateTime.Today.AddDays(20);
+            
+            
             bookingRepository = new FakeBookingRepository(start, end);
+            
+            
             IRepository<Room> roomRepository = new FakeRoomRepository();
             bookingManager = new BookingManager(bookingRepository, roomRepository);
         }
@@ -67,5 +72,22 @@ namespace HotelBooking.UnitTests
             Assert.Empty(bookingForReturnedRoomId);
         }
 
+        [Fact]
+        public async Task FindAvailableRoom_AllRoomsAreBookedWithPartialDateOverlap_ReturnsMinusOne()
+        {
+            //Arrange
+            IRepository<Booking> bookingRepository2;
+            DateTime start2 = DateTime.Today.AddDays(15);
+            DateTime end2 = DateTime.Today.AddDays(25);
+            bookingRepository2 = new FakeBookingRepository(start2, end2);
+            IRepository<Room> roomRepository = new FakeRoomRepository();
+            bookingManager = new BookingManager(bookingRepository2, roomRepository);
+            
+            //Act
+            int roomId = await bookingManager.FindAvailableRoom(start2, end2);
+            
+            //Assert
+            Assert.Equal(-1, roomId);
+        }
     }
 }

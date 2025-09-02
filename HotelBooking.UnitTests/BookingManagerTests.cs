@@ -86,6 +86,39 @@ namespace HotelBooking.UnitTests
             // Assert
             Assert.Equal(2, roomId);
         }
+
+        [Fact]
+        public async Task FindAvailableRoom_AllRoomsAreBookedWithPartialDateOverlap_ReturnsMinusOne()
+        {
+            // Arrange
+            var requestedStartDate = DateTime.Today.AddDays(10);
+            var requestedEndDate = DateTime.Today.AddDays(15);
+            
+            var rooms = new List<Room> { new Room { Id = 1}, new Room { Id = 2 } };
+
+            var existingBookings = new List<Booking> { };
+            
+            // Room 1: stats before our request but ends during it.
+            existingBookings.Add(new Booking { RoomId = 1, StartDate = requestedStartDate.AddDays(-5), EndDate = requestedStartDate.AddDays(2), IsActive = true });
+            // Room 2: starts during our request but ends after it.
+            existingBookings.Add(new Booking {RoomId = 2, StartDate = requestedStartDate.AddDays(2), EndDate = requestedStartDate.AddDays(10), IsActive = true });
+            
+            var bookingRepositoryMock = new Mock<IRepository<Booking>>();
+            bookingRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(existingBookings);
+            
+            var roomRepositoryMock = new Mock<IRepository<Room>>();
+            roomRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(rooms);
+            
+            var bookingManager = new BookingManager(bookingRepositoryMock.Object, roomRepositoryMock.Object);
+            
+            // Act
+            var roomId = await bookingManager.FindAvailableRoom(requestedStartDate, requestedEndDate);
+            
+            // Assert
+            Assert.Equal(-1, roomId);
+
+
+        }
         
         [Fact]
         public async Task CreateBooking_NoRoomIsAvailable_ReturnsFalseAndDoesNotAddBooking()

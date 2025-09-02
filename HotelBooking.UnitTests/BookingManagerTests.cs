@@ -67,5 +67,23 @@ namespace HotelBooking.UnitTests
             Assert.Empty(bookingForReturnedRoomId);
         }
 
+        [Fact]
+        public async Task GetFullyOccupiedDates_StartDateIsAfterEndDate_ThrowsArgumentException()
+        {
+            //Arrange
+            DateTime startDate = DateTime.Today.AddDays(1);
+            DateTime endDate = DateTime.Today;
+            
+            // Act
+            Task result() => bookingManager.FindAvailableRoom(startDate, endDate);
+
+            // Assert
+            await Assert.ThrowsAsync<ArgumentException>(result);
+            
+            
+        }
+
+ 
+
     }
 }

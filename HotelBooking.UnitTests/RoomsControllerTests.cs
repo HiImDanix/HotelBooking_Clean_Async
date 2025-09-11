@@ -107,7 +107,7 @@ namespace HotelBooking.UnitTests
                     Throws<InvalidOperationException>();
 
             Task result() => controller.Delete(3);
-            
+
             // Assert
             await Assert.ThrowsAsync<InvalidOperationException>(result);
 

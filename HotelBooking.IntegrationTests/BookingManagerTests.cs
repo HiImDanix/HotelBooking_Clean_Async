@@ -50,7 +50,7 @@ namespace HotelBooking.IntegrationTests
         public async Task FindAvailableRoom_RoomNotAvailable_RoomIdIsMinusOne()
         {
             // Act
-            var roomId = 
+            var roomId =
                 await bookingManager.FindAvailableRoom(DateTime.Today.AddDays(8), DateTime.Today.AddDays(8));
             // Assert
             Assert.Equal(-1, roomId);

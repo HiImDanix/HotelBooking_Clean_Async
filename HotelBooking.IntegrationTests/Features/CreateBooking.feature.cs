@@ -24,7 +24,8 @@ namespace HotelBooking.IntegrationTests.Features
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "CreateBooking", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "CreateBooking", "  In order to manage hotel reservations\n  As a booking manager\n  I want to create" +
+                " bookings only when rooms are available", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -103,9 +104,27 @@ namespace HotelBooking.IntegrationTests.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+  #line hidden
+            global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                        "Id",
+                        "Description"});
+            table1.AddRow(new string[] {
+                        "101",
+                        "Single"});
+            table1.AddRow(new string[] {
+                        "102",
+                        "Double"});
+#line 7
+    await testRunner.GivenAsync("the hotel has the following rooms:", ((string)(null)), table1, "Given ");
+#line hidden
+        }
+        
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/CreateBooking.feature", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/CreateBooking.feature", 4);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -144,7 +163,7 @@ namespace HotelBooking.IntegrationTests.Features
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create a new booking when one of two rooms is available", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 2
+#line 12
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -154,17 +173,8 @@ namespace HotelBooking.IntegrationTests.Features
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
-                            "Id",
-                            "Description"});
-                table1.AddRow(new string[] {
-                            "101",
-                            "Single"});
-                table1.AddRow(new string[] {
-                            "102",
-                            "Double"});
-#line 3
-    await testRunner.GivenAsync("the hotel has the following rooms:", ((string)(null)), table1, "Given ");
+#line 6
+  await this.FeatureBackgroundAsync();
 #line hidden
                 global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Id",
@@ -172,18 +182,70 @@ namespace HotelBooking.IntegrationTests.Features
                             "EndDate",
                             "RoomId"});
                 table2.AddRow(new string[] {
-                            "101",
-                            "3025-9-01",
-                            "3025-9-05",
+                            "201",
+                            "3025-09-01",
+                            "3025-09-05",
                             "101"});
-#line 8
+#line 13
     await testRunner.AndAsync("the following bookings exist:", ((string)(null)), table2, "And ");
 #line hidden
-#line 12
-    await testRunner.WhenAsync("I book a room from 3025-9-03 to 3025-9-06", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 16
+    await testRunner.WhenAsync("I book a room from 3025-09-03 to 3025-09-06", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 14
+#line 17
     await testRunner.ThenAsync("the booking should be created successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Fail to create a booking when no room is available")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "CreateBooking")]
+        [global::Xunit.TraitAttribute("Description", "Fail to create a booking when no room is available")]
+        public async global::System.Threading.Tasks.Task FailToCreateABookingWhenNoRoomIsAvailable()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "1";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Fail to create a booking when no room is available", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 19
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                            "Id",
+                            "StartDate",
+                            "EndDate",
+                            "RoomId"});
+                table3.AddRow(new string[] {
+                            "301",
+                            "3025-09-01",
+                            "3025-09-07",
+                            "101"});
+                table3.AddRow(new string[] {
+                            "302",
+                            "3025-09-01",
+                            "3025-09-07",
+                            "102"});
+#line 20
+    await testRunner.AndAsync("the following bookings exist:", ((string)(null)), table3, "And ");
+#line hidden
+#line 24
+    await testRunner.WhenAsync("I book a room from 3025-09-03 to 3025-09-06", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 25
+    await testRunner.ThenAsync("the booking should fail due to no availability", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

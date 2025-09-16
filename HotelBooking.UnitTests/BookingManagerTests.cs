@@ -60,33 +60,42 @@ namespace HotelBooking.UnitTests
             Assert.NotEqual(-1, roomId);
         }
 
-        [Fact]
-        public async Task FindAvailableRoom_RoomAvailable_ReturnsAvailableRoom()
+        //[expectedRoomId, roomIdBooking, daysFromNowStart1, daysFromNowEnd1, daysFromNowCheck]
+        [Theory]
+        [InlineData(1, 1, 5, 10, 2)]                //Room 1 should be available, since Room 1 is not booked in the given check time.
+        [InlineData(1, 2, 3, 7, 5)]                 //Room 1 is available since Room 1 is booked in time period
+        [InlineData(2, 1, 3, 6, 4)]                 //Room 2 is available since Room 1 is booked in time period
+        [InlineData(1, 2, 10, 15, 13)]              //Room 2 is available since Room 1 is booked in time period
+        [InlineData(1, 1, 10, 15, 2)]               //Room 2 is available since Room 1 is booked in time period
+
+        public async Task FindAvailableRoom_RoomAvailable_ReturnsAvailableRoom(int expectedRoomId, int roomIdBooking, int daysFromNowStart1, int daysFromNowEnd1, int daysFromNowCheck)
         {
             // Arrange
             var date = DateTime.Today.AddDays(1);
+            var dateCheck = date.AddDays(daysFromNowCheck);
             var rooms = new List<Room> { new Room { Id = 1 }, new Room { Id = 2 } };
             // Setup a booking that does NOT conflict with our desired date.
             var bookings = new List<Booking>
             {
-                new Booking { Id = 1, RoomId = 1, IsActive = true, StartDate = date.AddDays(5), EndDate = date.AddDays(10) }
+                new Booking { Id = 1, RoomId = roomIdBooking, IsActive = true, StartDate = date.AddDays(daysFromNowStart1), EndDate = date.AddDays(daysFromNowEnd1) }
             };
 
+            // Mock the repositories and set the bookings
             var bookingRepositoryMock = new Mock<IRepository<Booking>>();
             bookingRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(bookings);
 
+            //Mock the repository to return the rooms
             var roomRepositoryMock = new Mock<IRepository<Room>>();
             roomRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(rooms);
 
+            //Create the BookingManager with the mocked repositories
             var bookingManager = new BookingManager(bookingRepositoryMock.Object, roomRepositoryMock.Object);
 
             // Act
-            // Expect to get Room 2, since Room 1 is occupied later.
-            int roomId = await bookingManager.FindAvailableRoom(date, date.AddDays(1));
+            int roomId = await bookingManager.FindAvailableRoom(dateCheck, dateCheck.AddDays(1));
 
             // Assert
-            // TODO: I manually edited 2 to 1 to make the test pass. Is this correct?
-            Assert.Equal(1, roomId);
+            Assert.Equal(expectedRoomId, roomId);
         }
 
         [Fact]

@@ -17,22 +17,28 @@ namespace HotelBooking.Core
             this.roomRepository = roomRepository;
         }
 
+
         public async Task<bool> CreateBooking(Booking booking)
         {
             int roomId = await FindAvailableRoom(booking.StartDate, booking.EndDate);
 
-            if (roomId >= 0)
+            if (roomId < 0)
             {
-                booking.RoomId = roomId;
-                booking.IsActive = true;
-                await bookingRepository.AddAsync(booking);
-                return true;
-            }
-            else
-            {
+                // No room available → return false
                 return false;
             }
+
+            // Assign room and mark booking as active
+            booking.RoomId = roomId;
+            booking.IsActive = true;
+
+            await bookingRepository.AddAsync(booking);
+
+            return true;
         }
+
+
+
 
         public async Task<int> FindAvailableRoom(DateTime startDate, DateTime endDate)
         {
@@ -45,11 +51,11 @@ namespace HotelBooking.Core
             foreach (var room in rooms)
             {
                 var activeBookingsForCurrentRoom = activeBookings.Where(b => b.RoomId == room.Id);
-                if (activeBookingsForCurrentRoom.All(b => startDate < b.StartDate &&
-                    endDate < b.StartDate || startDate > b.EndDate && endDate > b.EndDate))
+                if (activeBookingsForCurrentRoom.All(b => endDate <= b.StartDate || startDate >= b.EndDate))
                 {
                     return room.Id;
                 }
+
             }
             return -1;
         }

@@ -28,7 +28,7 @@ namespace HotelBooking.UnitTests.Fakes
 
         public Task<Room> GetAsync(int id)
         {
-            Task<Room> roomTask = Task.Factory.StartNew(() => new Room { Id = 1, Description = "A"} );
+            Task<Room> roomTask = Task.Factory.StartNew(() => new Room { Id = 1, Description = "A" });
             return roomTask;
         }
 
@@ -39,7 +39,7 @@ namespace HotelBooking.UnitTests.Fakes
                 new Room { Id=1, Description="A" },
                 new Room { Id=2, Description="B" },
             };
-            
+
             Task<IEnumerable<Room>> roomsTask = Task.Factory.StartNew(() => rooms);
 
             return roomsTask;

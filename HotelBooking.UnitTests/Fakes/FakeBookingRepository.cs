@@ -40,13 +40,13 @@ namespace HotelBooking.UnitTests.Fakes
         {
             Task<Booking> bookingTask = Task.Factory.StartNew(() => new Booking
             {
-                Id = 1, 
-                StartDate = fullyOccupiedStartDate, 
-                EndDate = fullyOccupiedEndDate, 
-                IsActive = true, 
-                CustomerId = 1, 
+                Id = 1,
+                StartDate = fullyOccupiedStartDate,
+                EndDate = fullyOccupiedEndDate,
+                IsActive = true,
+                CustomerId = 1,
                 RoomId = 1
-            } );
+            });
 
             return bookingTask;
         }
@@ -59,9 +59,9 @@ namespace HotelBooking.UnitTests.Fakes
                 new Booking { Id=1, StartDate=fullyOccupiedStartDate, EndDate=fullyOccupiedEndDate, IsActive=true, CustomerId=1, RoomId=1 },
                 new Booking { Id=2, StartDate=fullyOccupiedStartDate, EndDate=fullyOccupiedEndDate, IsActive=true, CustomerId=2, RoomId=2 },
             };
-            
+
             Task<IEnumerable<Booking>> bookingsTask = Task.Factory.StartNew(() => bookings);
-            
+
             return bookingsTask;
         }
 

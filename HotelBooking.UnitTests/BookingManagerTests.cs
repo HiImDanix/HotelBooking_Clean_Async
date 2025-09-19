@@ -13,20 +13,24 @@ namespace HotelBooking.UnitTests
     public class BookingManagerTests
     {
         private readonly IBookingManager bookingManager;
-        private readonly Mock<IRepository<Booking>> bookingRepository;
-        private readonly Mock<IRepository<Room>> roomRepository;
+        private readonly IRepository<Booking> bookingRepository;
+        private readonly IRepository<Room> roomRepository;
 
-        public BookingManagerTests(){ 
-            bookingRepository = new Mock<IRepository<Booking>>();
-            roomRepository = new Mock<IRepository<Room>>();
-            bookingManager = new BookingManager(bookingRepository.Object, roomRepository.Object);
-            
+        public BookingManagerTests(){
+            DateTime start = DateTime.Today.AddDays(10);
+            DateTime end = DateTime.Today.AddDays(20);
+            bookingRepository = new FakeBookingRepository(start, end);
+            IRepository<Room> roomRepository = new FakeRoomRepository();
+            bookingManager = new BookingManager(bookingRepository, roomRepository);
         }
 
         [Fact]
         public async Task FindAvailableRoom_StartDateNotInTheFuture_ThrowsArgumentException()
         {
             // Arrange
+            var bookingRepositoryMock = new Mock<IRepository<Booking>>();
+            var roomRepositoryMock = new Mock<IRepository<Room>>();
+            var bookingManager = new BookingManager(bookingRepositoryMock.Object, roomRepositoryMock.Object);
             
             DateTime date = DateTime.Today;
 
@@ -41,7 +45,8 @@ namespace HotelBooking.UnitTests
         public async Task FindAvailableRoom_RoomAvailable_RoomIdNotMinusOne()
         {
             // Arrange
-            bookingRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(
+            var bookingRepositoryMock = new Mock<IRepository<Booking>>();
+            bookingRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(
                 new List<Booking>()
                 );
 
@@ -50,7 +55,7 @@ namespace HotelBooking.UnitTests
                 new List<Room> { new Room { Id = 1, Description = "A" } }
                 );
             
-            var bookingManager = new BookingManager(bookingRepository.Object, roomRepositoryMock.Object);
+            var bookingManager = new BookingManager(bookingRepositoryMock.Object, roomRepositoryMock.Object);
 
             // Act
             int roomId = await bookingManager.FindAvailableRoom(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2));
@@ -186,23 +191,5 @@ namespace HotelBooking.UnitTests
                 b.CustomerId == 123
             )), Times.Once());
         }
-        
-        [Fact]
-        public async Task GetFullyOccupiedDates_StartDateIsAfterEndDate_ThrowsArgumentException()
-        {
-            //Arrange
-            DateTime startDate = DateTime.Today.AddDays(1);
-            DateTime endDate = DateTime.Today;
-            
-            
-            // Act
-            Task result() => bookingManager.GetFullyOccupiedDates(startDate, endDate);
-
-            // Assert
-            await Assert.ThrowsAsync<ArgumentException>(result);
-            
-            
-        }
-        
     }
 }

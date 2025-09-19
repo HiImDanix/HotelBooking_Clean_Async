@@ -24,7 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="UnitTest1.cs" />
+      <Compile Remove="UnitTest1.cs" />
+      <Content Include="**/*.feature"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HotelBooking.Core\HotelBooking.Core.csproj" />
